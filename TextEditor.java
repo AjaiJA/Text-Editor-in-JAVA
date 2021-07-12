@@ -256,7 +256,7 @@ public class TextEditor extends JFrame implements ActionListener {
             }
         }
         catch(Exception e) {
-            System.out.println("File Not Found");
+            JOptionPane.showMessageDialog(this, "File Not Found");
         }
     }
 
@@ -301,7 +301,7 @@ public class TextEditor extends JFrame implements ActionListener {
             }
         }
         catch(Exception e) {
-            System.out.println("Something Gone Wrong");
+            JOptionPane.showMessageDialog(this, "Something Gone Wrong");
         }   
 
     }
@@ -322,7 +322,7 @@ public class TextEditor extends JFrame implements ActionListener {
             }
         }
         catch(Exception e) {
-            System.out.println("Something Gone Wrong");
+            JOptionPane.showMessageDialog(this, "Something Gone Wrong");
         }
     }
 
