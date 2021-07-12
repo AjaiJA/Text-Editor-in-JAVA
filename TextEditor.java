@@ -191,10 +191,12 @@ public class TextEditor extends JFrame implements ActionListener {
                 }
                 break;
             case "fontcolor":
-                Color c = JColorChooser.showDialog(this, "Select Font Color", Color.black);
-                textarea.setForeground(c);
+                Color fontcolor = JColorChooser.showDialog(this, "Select Font Color", Color.black);
+                textarea.setForeground(fontcolor);
                 break;
             case "backcolor":
+                Color backcolor = JColorChooser.showDialog(this, "Select Background Color", Color.black);
+                textarea.setBackground(backcolor);
                 break;
             default:
                 break;
