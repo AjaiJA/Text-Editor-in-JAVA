@@ -1,1 +1,1 @@
-### Text-Editor-in-JAVA
+### Text Editor using JAVA swing
