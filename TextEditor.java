@@ -5,17 +5,19 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.undo.UndoManager;
 
 public class TextEditor extends JFrame implements ActionListener {
 
     static JTextArea textarea;
     JMenuBar menuBar;
     JMenu file, edit;
-    JMenuItem jNew, jOpen, jSave, jSaveas, jExit;
+    JMenuItem jNew, jOpen, jSave, jSaveas, jExit, jUndo, jRedo, jCut, jCopy, jPaste, jSelect, jSelectAll;
     Image icon;
     String fileName, findText, fileContent;
     JFileChooser fileChooser;
     JToolBar toolBar;
+    UndoManager un;
 
     public TextEditor() {
 
@@ -25,6 +27,7 @@ public class TextEditor extends JFrame implements ActionListener {
         setIconImage(icon);
 
         fileChooser=new JFileChooser(".");
+        un=new UndoManager();
 
         textarea=new JTextArea();
         getContentPane().add(textarea);
@@ -32,6 +35,7 @@ public class TextEditor extends JFrame implements ActionListener {
         
         menuBar=new JMenuBar();
         setJMenuBar(menuBar);
+
         file=new JMenu("File");
         menuBar.add(file);
         edit=new JMenu("Edit");
@@ -60,6 +64,47 @@ public class TextEditor extends JFrame implements ActionListener {
         jExit.setActionCommand("Exit");
         jExit.addActionListener(this);
 
+        jUndo=new JMenuItem("Undo");
+        jRedo=new JMenuItem("Redo");
+        jCut=new JMenuItem("Cut");
+        jCopy=new JMenuItem("Copy");
+        jPaste = new JMenuItem("Paste");
+        jSelectAll = new JMenuItem("Select All");
+
+        edit.add(jUndo);
+        edit.add(jRedo);
+        edit.add(jCut);
+        edit.add(jCopy);
+        edit.add(jPaste);
+        edit.add(jSelectAll);
+
+        jUndo.setActionCommand("undo");
+        jUndo.addActionListener(this);
+        jRedo.setActionCommand("redo");
+        jRedo.addActionListener(this);
+        jCut.addActionListener(this);
+        jCopy.addActionListener(this);
+        jPaste.addActionListener(this);
+        jSelectAll.addActionListener(this);
+
+        textarea.getDocument().addUndoableEditListener(new UndoableEditListener() {
+            public void undoableEditHappened(UndoableEditEvent e) {
+                un.addEdit(e.getEdit());
+            }
+        });
+
+        jNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+        jOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+        jSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        jSaveas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        jExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
+        jCut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
+        jCopy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+        jPaste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
+        jUndo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
+        jRedo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
+        jSelectAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+
         setSize(600,500);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,6 +114,36 @@ public class TextEditor extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         String command=e.getActionCommand();
+
+        if(e.getSource()==jCut) {
+            textarea.cut();
+        }
+        if(e.getSource()==jCopy) {
+            textarea.copy();
+        }
+        if(e.getSource()==jPaste) {
+            textarea.paste();
+        }
+        if(e.getSource() == jSelectAll) {
+            textarea.selectAll();
+        }
+        if(command == "undo") {
+            try {
+                un.undo();
+            } 
+            catch(Exception ex) {
+                JOptionPane.showMessageDialog(this, "Field is Empty");
+            }
+        }
+        if(command == "redo") {
+            try {
+                un.redo();
+            } 
+            catch(Exception ex) {
+                JOptionPane.showMessageDialog(this, "Field is Empty");
+            }
+        }
+
         switch(command){
             case "New":
                 newFile();
