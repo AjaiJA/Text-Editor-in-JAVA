@@ -11,10 +11,11 @@ public class TextEditor extends JFrame implements ActionListener {
 
     static JTextArea textarea;
     JMenuBar menuBar;
-    JMenu file, edit;
-    JMenuItem jNew, jOpen, jSave, jSaveas, jExit, jUndo, jRedo, jCut, jCopy, jPaste, jSelect, jSelectAll;
+    JMenu file, edit, format;
+    JMenuItem jNew, jOpen, jSave, jSaveas, jExit, jUndo, jRedo, jCut, jCopy, jPaste, jSelect, jSelectAll, jBackColor, jFontColor;
     Image icon;
     String fileName, findText, fileContent;
+    JCheckBoxMenuItem jWordWrap;
     JFileChooser fileChooser;
     JToolBar toolBar;
     UndoManager un;
@@ -40,6 +41,8 @@ public class TextEditor extends JFrame implements ActionListener {
         menuBar.add(file);
         edit=new JMenu("Edit");
         menuBar.add(edit);
+        format = new JMenu("Format");
+        menuBar.add(format);
 
         jNew=new JMenuItem("New");
         jOpen=new JMenuItem("Open");
@@ -86,6 +89,21 @@ public class TextEditor extends JFrame implements ActionListener {
         jCopy.addActionListener(this);
         jPaste.addActionListener(this);
         jSelectAll.addActionListener(this);
+
+        jWordWrap=new JCheckBoxMenuItem("Word Wrap", true);
+        jFontColor = new JMenuItem("Font Color");
+        jBackColor = new JMenuItem("Background Color");
+        
+        format.add(jWordWrap);
+        format.add(jFontColor);
+        format.add(jBackColor);
+
+        jWordWrap.setActionCommand("wrap");
+        jWordWrap.addActionListener(this);
+        jFontColor.setActionCommand("fontcolor");
+        jFontColor.addActionListener(this);
+        jBackColor.setActionCommand("backcolor");
+        jBackColor.addActionListener(this);
 
         textarea.getDocument().addUndoableEditListener(new UndoableEditListener() {
             public void undoableEditHappened(UndoableEditEvent e) {
@@ -159,6 +177,24 @@ public class TextEditor extends JFrame implements ActionListener {
                 break;
             case "Exit":
                 exitFile();
+                break;
+            case "wrap":
+                if(jWordWrap.isSelected()) {
+                    textarea.setLineWrap(true);
+                    textarea.setWrapStyleWord(true);
+                    jWordWrap.setText("Word Wrap");
+                } 
+                else {
+                    textarea.setLineWrap(false);
+                    textarea.setWrapStyleWord(false);
+                    jWordWrap.setText("Word Wrap");
+                }
+                break;
+            case "fontcolor":
+                Color c = JColorChooser.showDialog(this, "Select Font Color", Color.black);
+                textarea.setForeground(c);
+                break;
+            case "backcolor":
                 break;
             default:
                 break;
